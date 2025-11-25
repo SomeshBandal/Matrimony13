@@ -1,6 +1,7 @@
 package com.spring.jwt.HoroscopeDetails;
 
 
+import com.spring.jwt.exception.HoroscopeNotFoundException;
 import com.spring.jwt.utils.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -53,11 +54,14 @@ public class HoroscopeDetailsController {
     public ResponseEntity<ApiResponse<HoroscopeDTO>> updateHoroscope(
             @PathVariable @Parameter Integer id,
             @RequestBody HoroscopeDTO horoscopeDTO) {
-        try{
+        try {
             HoroscopeDTO horoscopeDTO1 = horoscopeDetailsService.updateHoroscope(id, horoscopeDTO);
             return ResponseEntity.ok()
                     .body(ApiResponse.success("Horoscope details updated successfully"));
-        }catch (IllegalArgumentException e){
+        }catch(HoroscopeNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponse.error(HttpStatus.NOT_FOUND,"Horoscope not found", e.getMessage()));
+        }catch (Exception e){
             return ResponseEntity.badRequest()
                     .body(ApiResponse.error(HttpStatus.BAD_REQUEST,"horoscope update failed", e.getMessage()));
         }

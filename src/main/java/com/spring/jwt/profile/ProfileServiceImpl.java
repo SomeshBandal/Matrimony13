@@ -3,6 +3,7 @@ package com.spring.jwt.profile;
 
 import com.spring.jwt.entity.User;
 import com.spring.jwt.entity.UserProfile;
+import com.spring.jwt.exception.ProfileNotFoundException;
 import com.spring.jwt.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 

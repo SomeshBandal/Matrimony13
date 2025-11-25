@@ -1,12 +1,12 @@
 package com.spring.jwt.profile;
 
 import com.spring.jwt.entity.User;
+import com.spring.jwt.exception.ProfileNotFoundException;
 import com.spring.jwt.jwt.JwtService;
 import com.spring.jwt.repository.UserRepository;
 import com.spring.jwt.utils.ApiResponse;
 import io.jsonwebtoken.Claims;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -59,5 +59,19 @@ public class ProfileController {
                     .body(ApiResponse.error(HttpStatus.BAD_REQUEST,"profile creation failed",e.getMessage()));
         }
 
+    }
+
+    @GetMapping("/getProfile")
+    public ResponseEntity<ApiResponse<ProfileDTO>>getProfile(
+            @PathVariable Integer userId) {
+        try {
+            ProfileDTO profile = profileService.getProfile(userId);
+            return ResponseEntity.ok().body(ApiResponse.success("profile fetched successfully"));
+        } catch (ProfileNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponse.error(HttpStatus.NOT_FOUND, "Profile not found", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(ApiResponse.error(HttpStatus.BAD_REQUEST, "Request failed", e.getMessage()));
+        }
     }
 }

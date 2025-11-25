@@ -1,10 +1,9 @@
 package com.spring.jwt.HoroscopeDetails;
 
-import com.spring.jwt.dto.UserProfileDTO;
+
 import com.spring.jwt.entity.HoroscopeDetails;
-import com.spring.jwt.exception.UserNotFoundExceptions;
+import com.spring.jwt.exception.HoroscopeNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.event.spi.SaveOrUpdateEvent;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -30,14 +29,14 @@ public class HoroscopeDetailsServiceImpl implements HoroscopeDetailsService{
     }
 
     @Override
-    public HoroscopeDTO getHoroscopeById(Integer id) {
-        return horoscopeDetailsRepository.findById(id).map(horoscopeMapper::toDTO)
-                .orElseThrow(()-> new HoroscopeNotFoundException("horoscope not found with id :"+ id));
+    public HoroscopeDTO getHoroscopeById(Integer userId) {
+        return horoscopeDetailsRepository.findByUserId(userId).map(horoscopeMapper::toDTO)
+                .orElseThrow(()-> new HoroscopeNotFoundException("horoscope not found for user with id :"+ userId));
     }
 
     @Override
-    public HoroscopeDTO updateHoroscope(Integer id, HoroscopeDTO dto){
-        HoroscopeDetails horoscope = horoscopeDetailsRepository.findById(id)
+    public HoroscopeDTO updateHoroscope(Integer userId, HoroscopeDTO dto){
+        HoroscopeDetails horoscope = horoscopeDetailsRepository.findByUserId(userId)
                 .orElseThrow(() -> new HoroscopeNotFoundException("Horoscope not found"));
 
         if (horoscope.getBirthPlace() != null) {
@@ -82,12 +81,5 @@ public class HoroscopeDetailsServiceImpl implements HoroscopeDetailsService{
         HoroscopeDetails savedHoroscope = horoscopeDetailsRepository.save(horoscope);
         return horoscopeMapper.toDTO(savedHoroscope);
     }
-
-    @Override
-    public void deleteHoroscope(Integer id) {
-        horoscopeDetailsRepository.deleteById(id);
-
-    }
-
 
 }

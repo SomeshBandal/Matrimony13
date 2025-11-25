@@ -12,6 +12,4 @@ public interface HoroscopeDetailsService {
     HoroscopeDTO getHoroscopeById(Integer id);
 
     HoroscopeDTO updateHoroscope(Integer id, HoroscopeDTO dto);
-
-    void deleteHoroscope(Integer id);
 }

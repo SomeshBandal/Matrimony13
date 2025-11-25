@@ -1,4 +1,4 @@
-package com.spring.jwt.HoroscopeDetails;
+package com.spring.jwt.exception;
 
 public class HoroscopeNotFoundException extends RuntimeException {
     public HoroscopeNotFoundException(String message) {
