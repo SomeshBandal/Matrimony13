@@ -62,7 +62,7 @@ public class ContactServiceImpl implements ContactService {
         BaseResponseDTO response = new BaseResponseDTO();
         response.setCode("200");
         response.setMessage("Contact Saved Successfully");
-        response.setID(saveContact.getContactId());  // set userID here
+        response.setID(saveContact.getContactId());
 
         return response;
     }
