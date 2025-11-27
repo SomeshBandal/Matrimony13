@@ -1,10 +1,7 @@
 package com.spring.jwt.ContactDetails;
 
 import com.spring.jwt.entity.ContactDetails;
-import com.spring.jwt.utils.ApiResponse;
-import com.spring.jwt.utils.BaseResponseDTO;
-import com.spring.jwt.utils.ErrorResponseDto;
-import com.spring.jwt.utils.JwtUtils;
+import com.spring.jwt.utils.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -23,13 +20,12 @@ import java.util.List;
 public class ContactController {
 
     private final ContactService contactService;
-    private final JwtUtils jwtUtils;
 
     @PostMapping("/create")
     public ResponseEntity<BaseResponseDTO> createContact(
-            @RequestHeader("Authorization") String authHeader,
             @RequestBody ContactDTO contactDTO) {
-        Integer userId= jwtUtils.extractUSerID(authHeader);
+
+        Integer userId= SecurityUtil.getCurrentUserId();
         BaseResponseDTO response = contactService.create(contactDTO);
 
         return ResponseEntity
@@ -39,6 +35,7 @@ public class ContactController {
 
     @GetMapping("/getById")
     public ResponseEntity<ApiResponse<ContactDetails>> getContactByID(@RequestParam Integer contactID) {
+
         ContactDetails contact = contactService.getContactById(contactID);
 
         return ResponseEntity

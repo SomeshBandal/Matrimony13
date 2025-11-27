@@ -1,15 +1,9 @@
 package com.spring.jwt.profile;
 
-import com.spring.jwt.entity.User;
-import com.spring.jwt.jwt.JwtService;
-import com.spring.jwt.repository.UserRepository;
 import com.spring.jwt.utils.ApiResponse;
-import com.spring.jwt.utils.JwtUtils;
-import io.jsonwebtoken.Claims;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
+import com.spring.jwt.utils.BaseResponseDTO;
+import com.spring.jwt.utils.SecurityUtil;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +11,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("/api/profile")
 @RequiredArgsConstructor
 @Validated
 @Tag(name = "Profile Api", description = "Api for profile management")
@@ -25,21 +19,42 @@ public class ProfileController {
 
     private final ProfileService profileService;
 
-    private final JwtUtils jwtUtils;
+    @PostMapping("/createProfile")
+    public ResponseEntity<BaseResponseDTO> createProfile(
+            @RequestBody ProfileDTO profileDTO) {
 
-    @Operation(summary = "Api for profile creation")
-    @PostMapping ("/createProfile")
-    public ResponseEntity<ApiResponse<ProfileDTO>> createProfile(
-            @RequestHeader("Authorization") String authHeader,
-            @RequestBody @Valid ProfileDTO profileDTO){
-        try {
-            Integer userId= jwtUtils.extractUSerID(authHeader);
-            profileService.createProfile(userId, profileDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success("profile created successfully"));
-        }catch (Exception e){
-            return ResponseEntity.badRequest()
-                    .body(ApiResponse.error(HttpStatus.BAD_REQUEST,"profile creation failed",e.getMessage()));
-        }
+        Integer userId= SecurityUtil.getCurrentUserId();
 
+        System.out.println("🔍 Extracted from JWT token: userId = " + userId);
+        BaseResponseDTO response = profileService.createProfile(userId,profileDTO);
+
+        return  ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(response);
+      }
+
+    @PatchMapping("/updateProfile")
+    public ResponseEntity<ApiResponse<ProfileDTO>> updateByUserID(
+            @RequestBody ProfileDTO dto){
+
+        Integer userId = SecurityUtil.getCurrentUserId();
+        profileService.updateProfile(userId, dto);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(ApiResponse.success("Profile Updated Successfully !"));
     }
+
+    @GetMapping("/getProfile")
+    public ResponseEntity<ApiResponse<ProfileDTO>> getProfileById(){
+
+        Integer userId = SecurityUtil.getCurrentUserId();
+        ProfileDTO response= profileService.getProfile(userId);
+
+        return ResponseEntity
+                .status(HttpStatus.FOUND)
+                .body(ApiResponse.success("Profile details for user id :"+ userId, response));
+    }
+
 }
+

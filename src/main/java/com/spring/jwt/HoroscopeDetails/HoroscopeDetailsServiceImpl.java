@@ -1,82 +1,88 @@
 package com.spring.jwt.HoroscopeDetails;
 
-import com.spring.jwt.dto.UserProfileDTO;
+
 import com.spring.jwt.entity.HoroscopeDetails;
+import com.spring.jwt.entity.User;
 import com.spring.jwt.exception.UserNotFoundExceptions;
+import com.spring.jwt.repository.UserRepository;
+import com.spring.jwt.utils.BaseResponseDTO;
+import com.spring.jwt.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.event.spi.SaveOrUpdateEvent;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class HoroscopeDetailsServiceImpl implements HoroscopeDetailsService{
 
     private final HoroscopeDetailsRepository horoscopeDetailsRepository;
-
+    private final UserRepository userRepository;
     private final HoroscopeMapper horoscopeMapper;
 
+
     @Override
-    public HoroscopeDTO saveHoroscopeDetails(HoroscopeDTO horoscopeDTO) {
+    public BaseResponseDTO saveHoroscopeDetails(Integer userId, HoroscopeDTO dto) {
 
-        if(horoscopeDTO==null){
-            throw new IllegalArgumentException("Horoscope data cannot be null");
-        }
-        HoroscopeDetails entity = horoscopeMapper.toEntity(horoscopeDTO);
-        HoroscopeDetails savedHoroscope = horoscopeDetailsRepository.save(entity);
-        return horoscopeMapper.toDTO(savedHoroscope);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundExceptions("User not found"));
 
+        HoroscopeDetails entity = horoscopeMapper.toEntity(dto);
+        entity.setUser(user);
+
+        horoscopeDetailsRepository.save(entity);
+
+        BaseResponseDTO response = new BaseResponseDTO();
+        response.setCode("201");
+        response.setMessage("Horoscope saved successfully");
+        response.setID(entity.getHoroscopeDetailsId());
+        return response;
     }
 
     @Override
-    public HoroscopeDTO getHoroscopeById(Integer id) {
-        return horoscopeDetailsRepository.findById(id).map(horoscopeMapper::toDTO)
-                .orElseThrow(()-> new HoroscopeNotFoundException("horoscope not found with id :"+ id));
+    public HoroscopeDTO getHoroscopeById(Integer userId) {
+        return horoscopeDetailsRepository.findByUserId(userId).map(horoscopeMapper::toDTO)
+                .orElseThrow(()-> new HoroscopeNotFoundException("horoscope not found with id :"+ userId));
     }
 
     @Override
-    public HoroscopeDTO updateHoroscope(Integer id, HoroscopeDTO dto){
-        HoroscopeDetails horoscope = horoscopeDetailsRepository.findById(id)
+    public HoroscopeDTO updateHoroscope(Integer userId, HoroscopeDTO dto){
+        HoroscopeDetails horoscope = horoscopeDetailsRepository.findByUserId(userId)
                 .orElseThrow(() -> new HoroscopeNotFoundException("Horoscope not found"));
 
-        if (horoscope.getBirthPlace() != null) {
+        if (dto.getBirthPlace() != null) {
             horoscope.setBirthPlace(dto.getBirthPlace());
         }
-        if (horoscope.getDob() != null) {
+        if (dto.getDob() != null) {
             horoscope.setDob(dto.getDob());
         }
-        if (horoscope.getTime() != null) {
+        if (dto.getTime() != null) {
             horoscope.setTime(dto.getTime());
         }
-        if (horoscope.getRashi() != null) {
+        if (dto.getRashi() != null) {
             horoscope.setRashi(dto.getRashi());
         }
-        if (horoscope.getNakshatra() != null) {
+        if (dto.getNakshatra() != null) {
             horoscope.setNakshatra(dto.getNakshatra());
         }
-        if (horoscope.getCharan() != null) {
+        if (dto.getCharan() != null) {
             horoscope.setCharan(dto.getCharan());
         }
-        if (horoscope.getNadi() != null) {
+        if (dto.getNadi() != null) {
             horoscope.setNadi(dto.getNadi());
         }
-        if (horoscope.getGan() != null) {
+        if (dto.getGan() != null) {
             horoscope.setGan(dto.getGan());
         }
-        if (horoscope.getMangal() != null) {
+        if (dto.getMangal() != null) {
             horoscope.setMangal(dto.getMangal());
         }
-        if (horoscope.getGotra() != null) {
+        if (dto.getGotra() != null) {
             horoscope.setGotra(dto.getGotra());
         }
-        if (horoscope.getDevak() != null) {
+        if (dto.getDevak() != null) {
             horoscope.setDevak(dto.getDevak());
         }
-        if (horoscope.getStatus1() != null) {
-            horoscope.setStatus1(dto.getStatus());
-        }
-        if (horoscope.getNadi() != null) {
+        if (dto.getNadi() != null) {
             horoscope.setNadi(dto.getNadi());
         }
         HoroscopeDetails savedHoroscope = horoscopeDetailsRepository.save(horoscope);
@@ -84,8 +90,8 @@ public class HoroscopeDetailsServiceImpl implements HoroscopeDetailsService{
     }
 
     @Override
-    public void deleteHoroscope(Integer id) {
-        horoscopeDetailsRepository.deleteById(id);
+    public void deleteHoroscope(Integer userId) {
+        horoscopeDetailsRepository.deleteById(userId);
 
     }
 
