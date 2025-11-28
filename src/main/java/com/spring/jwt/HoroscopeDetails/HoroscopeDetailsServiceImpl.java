@@ -7,7 +7,6 @@ import com.spring.jwt.exception.HoroscopeNotFoundException;
 import com.spring.jwt.exception.UserNotFoundExceptions;
 import com.spring.jwt.repository.UserRepository;
 import com.spring.jwt.utils.BaseResponseDTO;
-import com.spring.jwt.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
