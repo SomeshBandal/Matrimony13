@@ -59,8 +59,14 @@ public class FamilyBackgroundServiceImpl implements FamilyBackgroundService{
         FamilyBackground background = repository.findByUserId(userId)
                 .orElseThrow(() -> new FamilyBackgroundNotFoundException("FamilyBackground not found"));
 
+        if (dto.getFathersName() != null) {
+            background.setFathersName(dto.getFathersName());
+        }
         if (dto.getFatherOccupation() != null) {
             background.setFatherOccupation(dto.getFatherOccupation());
+        }
+        if (dto.getMothersName() != null) {
+            background.setMothersName(dto.getMothersName());
         }
         if (dto.getMotherOccupation() != null) {
             background.setMotherOccupation(dto.getMotherOccupation());

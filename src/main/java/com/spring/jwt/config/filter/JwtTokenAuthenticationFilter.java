@@ -46,107 +46,73 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
 
     private static final String REFRESH_TOKEN_COOKIE_NAME = "refresh_token";
     private static final String ACCESS_TOKEN_COOKIE_NAME = "access_token";
-    
+
     private boolean setauthreq = true;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        String authHeader = request.getHeader("Authorization");
 
-        // 1. No token → just continue
+        String authHeader = request.getHeader("Authorization");
+//        String path = request.getRequestURI();
+
+        // PUBLIC URLs skip authentication
+        if (isPublic(request)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        // No token -> skip
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
 
-         String token = getJwtFromRequest(request);
-
-        // 2. Validate token
-        if (!jwtService.isValidToken(token)) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-
-        // 3. Extract username + userId from token
-        //String username = jwtService.extractUsername(token);
-        Claims claims = jwtService.extractClaims(token);
-        Integer userId = claims.get("userId", Integer.class);
-        String username= claims.getSubject();
-
-        // 4. Load user details (for roles, etc.)
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
-        // 5. Create Authentication and store userId in details
-        UsernamePasswordAuthenticationToken authentication =
-                new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities()
-                );
-
-        // 👉 Store userId here so we can read it later
-        authentication.setDetails(userId);
-
-        // 6. Put into SecurityContext
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        filterChain.doFilter(request, response);
-        String path = request.getRequestURI();
-        log.debug("JWT Filter processing request for path: {}", path);
-
-        if (path.contains("/api/jwtUnAuthorize/block") || path.contains("/api/jwtUnAuthorize/Exclude")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-        
-        if (!setauthreq) {
-            handleAccessBlocked(response);
-            return;
-        }
-
-        if (isPublic(request)) {
-            log.debug("Skipping JWT filter for public URL: {}", path);
-            filterChain.doFilter(request, response);
-            return;
-        }
-        
-         //String token = getJwtFromRequest(request);
-
-        if (token == null) {
-            log.warn("No JWT token found for protected path: {}", path);
-            handleAccessDenied(response);
-            return;
-        }
+        String token = getJwtFromRequest(request);
 
         try {
-            if (!processToken(request, token)) {
-                log.warn("Invalid token for path: {}", path);
-                String reason = getSpecificInvalidReason(token, request);
-                handleInvalidToken(response, reason);
+
+            // Validate token
+            if (!jwtService.isValidToken(token)) {
+                filterChain.doFilter(request, response);
                 return;
             }
 
-            filterChain.doFilter(request, response);
-            
-        } catch (ExpiredJwtException e) {
-            log.warn("Expired JWT token: {}", e.getMessage());
-            SecurityContextHolder.clearContext();
-            handleExpiredToken(response);
-        } catch (JwtException e) {
-            log.warn("Invalid JWT token: {}", e.getMessage());
-            SecurityContextHolder.clearContext();
-            handleInvalidToken(response, "Invalid token: " + e.getMessage());
+            // Extract claims
+            Claims claims = jwtService.extractClaims(token);
+            Integer userId = claims.get("userId", Integer.class);
+            String username = claims.getSubject();
+
+            // Load user
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
+            // Create Authentication
+            UsernamePasswordAuthenticationToken auth =
+                    new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null,
+                            userDetails.getAuthorities()
+                    );
+
+            // Store userId so we can fetch it anywhere
+            auth.setDetails(userId);
+
+            // Set in SecurityContext
+            SecurityContextHolder.getContext().setAuthentication(auth);
+
         } catch (Exception e) {
-            log.error("Authentication error: {}", e.getMessage());
             SecurityContextHolder.clearContext();
-            handleAuthenticationException(response, e);
+            filterChain.doFilter(request, response);
+            return;
         }
+
+        // IMPORTANT: Only ONE doFilter call
+        filterChain.doFilter(request, response);
     }
 
-    private boolean isPublic(HttpServletRequest request) {
+
+        private boolean isPublic(HttpServletRequest request) {
         String path = request.getRequestURI();
         // Minimal allowlist to avoid interfering with public endpoints
         if (path.equals(jwtConfig.getUrl()) || path.equals(jwtConfig.getRefreshUrl())) return true;

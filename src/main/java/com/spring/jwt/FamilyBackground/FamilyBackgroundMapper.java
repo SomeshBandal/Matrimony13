@@ -13,7 +13,9 @@ public class FamilyBackgroundMapper {
         }
         FamilyBackgroundDTO dto = new FamilyBackgroundDTO();
 
+        dto.setFathersName(bg.getFathersName());
         dto.setFatherOccupation(bg.getFatherOccupation());
+        dto.setMothersName(bg.getMothersName());
         dto.setMotherOccupation(bg.getMotherOccupation());
         dto.setBrothers(bg.getBrother());
         dto.setMarriedBrothers(bg.getMarriedBrothers());
@@ -35,6 +37,9 @@ public class FamilyBackgroundMapper {
         }
 
         FamilyBackground bg = new FamilyBackground();
+
+        bg.setFathersName(dto.getFathersName());
+        bg.setMothersName(dto.getMothersName());
         bg.setFatherOccupation(dto.getFatherOccupation());
         bg.setMotherOccupation(dto.getMotherOccupation());
         bg.setBrother(dto.getBrothers());

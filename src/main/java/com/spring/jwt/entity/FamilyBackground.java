@@ -20,7 +20,13 @@ public class FamilyBackground {
     private Integer familyBackgroundId;
 
     @Column(length = 45)
+    private String fathersName;
+
+    @Column(length = 45)
     private String fatherOccupation;
+
+    @Column(length = 45)
+    private String mothersName;
 
     @Column(length = 45)
     private String motherOccupation;

@@ -10,7 +10,9 @@ import lombok.NoArgsConstructor;
 public class FamilyBackgroundDTO {
 
 
+    private String fathersName;
     private String fatherOccupation;
+    private String mothersName;
     private String motherOccupation;
     private String brothers;
     private String marriedBrothers;
