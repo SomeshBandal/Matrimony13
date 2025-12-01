@@ -1,5 +1,7 @@
 package com.spring.jwt.FamilyBackground;
 
+import com.spring.jwt.CompleteProfile.CompleteProfileRepository;
+import com.spring.jwt.entity.CompleteProfile;
 import com.spring.jwt.entity.FamilyBackground;
 import com.spring.jwt.entity.User;
 import com.spring.jwt.exception.FamilyBackgroundNotFoundException;
@@ -17,6 +19,7 @@ public class FamilyBackgroundServiceImpl implements FamilyBackgroundService{
     private final FamilyBackgroundRepository repository;
     private final UserRepository userRepository;
     private final FamilyBackgroundMapper mapper;
+    private final CompleteProfileRepository completeProfileRepository;
 
     @Override
     public BaseResponseDTO saveFamilyBackground(Integer userId, FamilyBackgroundDTO dto) {
@@ -24,15 +27,23 @@ public class FamilyBackgroundServiceImpl implements FamilyBackgroundService{
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundExceptions("User not found"));
 
-        FamilyBackground entity = mapper.toEntity(dto);
-        entity.setUser(user);
+        FamilyBackground saveFamily = mapper.toEntity(dto);
+        saveFamily.setUser(user);
 
-        repository.save(entity);
+        repository.save(saveFamily);
+
+        //                CompleteProfile completeProfile = completeProfileRepository.findByUserId(userId)
+//                .orElse(new CompleteProfile());
+//        completeProfile.setContactDetails(saveContact);
+
+        CompleteProfile completeProfile =  completeProfileRepository.findByUserId(userId)
+                .orElseThrow(() -> new UserNotFoundExceptions("USer Not Found with ID " + userId));
+        completeProfile.setFamilyBackground(saveFamily);
 
         BaseResponseDTO response = new BaseResponseDTO();
         response.setCode("201");
         response.setMessage("FamilyBackground saved successfully");
-        response.setID(entity.getFamilyBackgroundId());
+        response.setID(saveFamily.getFamilyBackgroundId());
         return response;
     }
 

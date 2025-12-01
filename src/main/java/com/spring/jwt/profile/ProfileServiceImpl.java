@@ -1,6 +1,8 @@
 package com.spring.jwt.profile;
 
 
+import com.spring.jwt.CompleteProfile.CompleteProfileRepository;
+import com.spring.jwt.entity.CompleteProfile;
 import com.spring.jwt.entity.User;
 import com.spring.jwt.entity.UserProfile;
 import com.spring.jwt.exception.ProfileNotFoundException;
@@ -18,8 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProfileServiceImpl implements ProfileService {
 
     private final ProfileRepository profileRepository;
-    private final ProfileMapper profileMapper;
     private final UserRepository userRepository;
+    private final CompleteProfileRepository completeProfileRepository;
 
     @Override
     @Transactional
@@ -28,16 +30,23 @@ public class ProfileServiceImpl implements ProfileService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundExceptions("User not found"));
 
-        UserProfile entity = profileMapper.toEntity(dto);
-        entity.setUser(user);
+       UserProfile saveProfile = ProfileMapper.toEntity(dto);
+       saveProfile.setUser(user);
+       profileRepository.save(saveProfile);
 
-        profileRepository.save(entity);
+//        CompleteProfile completeProfile = completeProfileRepository.findByUserId(userId)
+//                .orElse(new CompleteProfile());
+//        completeProfile.setUserProfile(saveProfile);
+
+        CompleteProfile completeProfile =  completeProfileRepository.findByUserId(userId)
+                .orElseThrow(() -> new UserNotFoundExceptions("USer Not Found with ID " + userId));
+        completeProfile.setUserProfile(saveProfile);
 
 
         BaseResponseDTO response = new BaseResponseDTO();
         response.setCode("201");
         response.setMessage("profile Created successfully");
-        response.setID(entity.getUserProfileId());
+        response.setID(saveProfile.getUserProfileId());
         return response;
     }
 
@@ -120,7 +129,7 @@ public class ProfileServiceImpl implements ProfileService {
         }
 
         UserProfile savedProfile = profileRepository.save(profile);
-        profileMapper.toDTO(savedProfile);
+        ProfileMapper.toDTO(savedProfile);
 
         ApiResponse response = new ApiResponse();
         response.setStatusCode(200);
@@ -133,7 +142,7 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     @Transactional(readOnly = true)
     public ProfileDTO getProfile(Integer userId) {
-        return profileRepository.findByUserId(userId).map(profileMapper::toDTO)
+        return profileRepository.findByUserId(userId).map(ProfileMapper::toDTO)
                 .orElseThrow(() -> new ProfileNotFoundException("profile not found"));
 
     }

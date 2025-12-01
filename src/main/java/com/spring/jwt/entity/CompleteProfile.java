@@ -18,25 +18,25 @@ public class CompleteProfile {
 //    @Column(length = 45)
 //    private String statusCol;
 //
-//    @OneToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "userProfileId", nullable = false)
-//    private UserProfile userProfile;
-//
-//    @OneToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "horoscopeDetailsId", nullable = false)
-//    private HoroscopeDetails horoscopeDetails;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "userProfileId")
+    private UserProfile userProfile;
 //
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "educationId", nullable = false)
+    @JoinColumn(name = "horoscopeDetailsId")
+    private HoroscopeDetails horoscopeDetails;
+//
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "educationId")
     private EducationAndProfession educationAndProfession;
 //
-//    @OneToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "familyBackgroundId", nullable = false)
-//    private FamilyBackground familyBackground;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "familyBackgroundId")
+    private FamilyBackground familyBackground;
 //
-//    @OneToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "expectationsId", nullable = false)
-//    private PartnerPreference partnerPreference;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "expectationsId")
+    private PartnerPreference partnerPreference;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "contactId")

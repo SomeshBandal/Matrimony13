@@ -101,11 +101,11 @@ public class DocumentServiceImpl implements DocumentService{
             savedDocumentIds.add(savedDoc.getDocumentId());
         }
 
-        // -------- 6. Update CompleteProfile --------
-        CompleteProfile completeProfile = completeProfileRepository.findByUserId(userId)
-                .orElse(new CompleteProfile());
-
-        completeProfile.setUser(user);
+//        // -------- 6. Update CompleteProfile --------
+//        CompleteProfile completeProfile = completeProfileRepository.findByUserId(userId)
+//                .orElse(new CompleteProfile());
+//
+//        completeProfile.setUser(user);
 
 //        // add all uploaded document IDs
 //        if (completeProfile.getDocuments() == null) {
@@ -115,7 +115,7 @@ public class DocumentServiceImpl implements DocumentService{
 //        List<Document> allDocuments = documentRepository.findAllById(savedDocumentIds);
 //        completeProfile.getDocuments().addAll(allDocuments);
 
-        completeProfileRepository.save(completeProfile);
+       // completeProfileRepository.save(completeProfile);
 
         // -------- 7. Prepare Response --------
         BaseResponseDTO response = new BaseResponseDTO();

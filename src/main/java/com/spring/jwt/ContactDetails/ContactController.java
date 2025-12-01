@@ -17,7 +17,7 @@ public class ContactController {
     private final ContactService contactService;
 
     @PostMapping("/create")
-    public ResponseEntity<BaseResponseDTO> createContact(@RequestHeader("Authorization") String authHeader,
+    public ResponseEntity<BaseResponseDTO> createContact(
                                                          @RequestBody ContactDTO contactDTO) {
 
         Integer userId = SecurityUtil.getCurrentUserId();

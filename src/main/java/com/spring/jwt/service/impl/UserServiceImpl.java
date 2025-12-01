@@ -116,9 +116,6 @@ public class UserServiceImpl implements UserService {
         user.setEmail(userDTO.getEmail());
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         user.setMobileNumber(userDTO.getMobileNumber());
-//        user.setFirstName(userDTO.getFirstName());
-//        user.setLastName(userDTO.getLastName());
-//        user.setAddress(userDTO.getAddress());
         user.setEmailVerified(true);
 
         Set<Role> roles = new HashSet<>();
@@ -137,83 +134,14 @@ public class UserServiceImpl implements UserService {
         user.setRoles(roles);
 
         user = userRepository.save(user);
-//
-//        if (role != null) {
-//            switch (role.getName()) {
-//                case "USER":
-//                   createUserProfile(user, userDTO);
-//                    break;
-//                case "ADMIN":
-//                    createAdminProfile(user,userDTO);
-//
-//                default:
-//                    break;
-//            }
-//        }
-
-        return user;
-    }
-
-    private void createAdminProfile(User user, UserDTO userDTO) {
-    }
-
-    private void createUserProfile(User user, UserDTO userDTO) {
-        UserProfile userProfile = new UserProfile();
-        userProfile.setGender(userDTO.getGender());
-//        userProfile.setMail(userDTO.getEmail());
-//        userProfile.setMobileNumber(userDTO.getMobileNumber());
-        userProfile.setUser(user);
-        userProfileRepository.save(userProfile);
-
-        ContactDetails contactDetails = new ContactDetails();
-        contactDetails.setUser(user);
-        contactRepository.save(contactDetails);
-
-        Document document =new Document();
-        document.setUser(user);
-        documentRepository.save(document);
-
-        EducationAndProfession educationAndProfession = new EducationAndProfession();
-        educationAndProfession.setUser(user);
-        educationAndProfessionRepository.save(educationAndProfession);
-
-        FamilyBackground familyBackground = new FamilyBackground();
-        familyBackground.setUser(user);
-        familyBackgroundRepository.save(familyBackground);
-
-        HoroscopeDetails horoscopeDetails = new HoroscopeDetails();
-        horoscopeDetails.setUser(user);
-        horoscopeRepository.save(horoscopeDetails);
-
-        PartnerPreference partnerPreference = new PartnerPreference();
-        partnerPreference.setUser(user);
-        partnerPreferenceRepository.save(partnerPreference);
 
         CompleteProfile completeProfile = new CompleteProfile();
         completeProfile.setUser(user);
         completeProfileRepository.save(completeProfile);
 
-        log.info("Created  profile for user ID: {}", user.getId());
+
+        return user;
     }
-
-//    private void createUserProfile(User user, UserDTO userDTO) {
-//        UserProfile student = new UserProfile();
-//        student.setName(userDTO.getFirstName());
-//        student.setLastName(userDTO.getLastName());
-//        student.setDateOfBirth(userDTO.getDateOfBirth());
-//        student.setAddress(userDTO.getAddress());
-//        student.setStudentcol(userDTO.getStudentcol());
-//        student.setStudentcol1(userDTO.getStudentcol1());
-//        student.setStudentClass(userDTO.getStudentClass());
-//        student.setUserId(user.getId().intValue());
-//
-//        userProfileRepository.save(student);
-//        log.info("Created student profile for user ID: {}", user.getId());
-//    }
-    
-
-    
-
 
     private void validateAccount(UserDTO userDTO) {
         if (ObjectUtils.isEmpty(userDTO)) {

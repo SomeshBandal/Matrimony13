@@ -33,18 +33,22 @@ public class ContactServiceImpl implements ContactService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundExceptions("User not found"));
 
-//        Optional<ContactDetails> existing = contactRepository.findByUserId(userId);
-//        if (existing != null) {
-//            throw new UserAlreadyExistException("Contact already exists");
-//        }
+        Optional<ContactDetails> existing = contactRepository.findByUserId(userId);
+        if (existing == null) {
+            throw new UserAlreadyExistException("Contact already exists");
+        }
 
         ContactDetails saveContact = ContactMapper.toEntity(contactDTO);
         saveContact.setUser(user);
         contactRepository.save(saveContact);
 
-        CompleteProfile completeProfile = new CompleteProfile();
+//                CompleteProfile completeProfile = completeProfileRepository.findByUserId(userId)
+//                .orElse(new CompleteProfile());
+//        completeProfile.setContactDetails(saveContact);
+
+        CompleteProfile completeProfile =  completeProfileRepository.findByUserId(userId)
+                .orElseThrow(() -> new UserNotFoundExceptions("USer Not Found with ID " + userId));
         completeProfile.setContactDetails(saveContact);
-        completeProfileRepository.save(completeProfile);
 
         BaseResponseDTO response = new BaseResponseDTO();
         response.setCode("200");

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProfileMapper {
 
-    public ProfileDTO toDTO(UserProfile profile) {
+    public static ProfileDTO toDTO(UserProfile profile) {
         if (profile == null) {
             return null;
         }
@@ -42,7 +42,7 @@ public class ProfileMapper {
         return dto;
     }
 
-    public UserProfile toEntity(ProfileDTO dto) {
+    public static UserProfile toEntity(ProfileDTO dto) {
         if (dto == null){
             return null;
         }

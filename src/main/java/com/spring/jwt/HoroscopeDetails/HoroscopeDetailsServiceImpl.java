@@ -1,13 +1,14 @@
 package com.spring.jwt.HoroscopeDetails;
 
 
+import com.spring.jwt.CompleteProfile.CompleteProfileRepository;
+import com.spring.jwt.entity.CompleteProfile;
 import com.spring.jwt.entity.HoroscopeDetails;
 import com.spring.jwt.entity.User;
 import com.spring.jwt.exception.HoroscopeNotFoundException;
 import com.spring.jwt.exception.UserNotFoundExceptions;
 import com.spring.jwt.repository.UserRepository;
 import com.spring.jwt.utils.BaseResponseDTO;
-import com.spring.jwt.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,23 +20,28 @@ public class HoroscopeDetailsServiceImpl implements HoroscopeDetailsService{
     private final HoroscopeDetailsRepository horoscopeDetailsRepository;
     private final UserRepository userRepository;
     private final HoroscopeMapper horoscopeMapper;
+    private final CompleteProfileRepository completeProfileRepository;
 
 
     @Override
-    public BaseResponseDTO saveHoroscopeDetails(Integer userId, HoroscopeDTO dto) {
+    public BaseResponseDTO saveHoroscopeDetails(Integer userId, HoroscopeDTO horoscopeDTO) {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundExceptions("User not found"));
 
-        HoroscopeDetails entity = horoscopeMapper.toEntity(dto);
-        entity.setUser(user);
+        HoroscopeDetails savehoroscope = horoscopeMapper.toEntity(horoscopeDTO);
+        savehoroscope.setUser(user);
 
-        horoscopeDetailsRepository.save(entity);
+        horoscopeDetailsRepository.save(savehoroscope);
+
+        CompleteProfile completeProfile =  completeProfileRepository.findByUserId(userId)
+                .orElseThrow(() -> new UserNotFoundExceptions("USer Not Found with ID " + userId));
+        completeProfile.setHoroscopeDetails(savehoroscope);
 
         BaseResponseDTO response = new BaseResponseDTO();
         response.setCode("201");
         response.setMessage("Horoscope saved successfully");
-        response.setID(entity.getHoroscopeDetailsId());
+        response.setID(savehoroscope.getHoroscopeDetailsId());
         return response;
     }
 

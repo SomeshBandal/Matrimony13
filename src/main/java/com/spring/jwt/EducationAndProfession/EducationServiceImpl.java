@@ -26,21 +26,23 @@ public class EducationServiceImpl implements EducationService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundExceptions("User not found"));
 
-        EducationAndProfession save = EducationMapper.toEntity(educationDTO);
-        save.setUser(user);
-        educationRepository.save(save);
+        EducationAndProfession saveEducation = EducationMapper.toEntity(educationDTO);
+        saveEducation.setUser(user);
+        educationRepository.save(saveEducation);
 
-//        CompleteProfile completeProfile =  completeProfileRepository.findByUserId(userId)
-//                .orElseThrow(() -> new UserNotFoundExceptions("USer Not Found with ID " + userId));
+        //                CompleteProfile completeProfile = completeProfileRepository.findByUserId(userId)
+//                .orElse(new CompleteProfile());
+//        completeProfile.setContactDetails(saveContact);
 
-        CompleteProfile completeProfile1 = new CompleteProfile();
-        completeProfile1.setEducationAndProfession(save);
-        completeProfileRepository.save(completeProfile1);
+        CompleteProfile completeProfile =  completeProfileRepository.findByUserId(userId)
+                .orElseThrow(() -> new UserNotFoundExceptions("USer Not Found with ID " + userId));
+        completeProfile.setEducationAndProfession(saveEducation);
+
 
         BaseResponseDTO response = new BaseResponseDTO();
         response.setCode("200");
         response.setMessage("Education Saved Successfully");
-        response.setID(save.getEducationId());
+        response.setID(saveEducation.getEducationId());
 
         return response;
     }
