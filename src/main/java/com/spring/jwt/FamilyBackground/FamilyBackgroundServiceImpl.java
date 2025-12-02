@@ -1,5 +1,7 @@
 package com.spring.jwt.FamilyBackground;
 
+import com.spring.jwt.CompleteProfile.CompleteProfileRepository;
+import com.spring.jwt.entity.CompleteProfile;
 import com.spring.jwt.entity.FamilyBackground;
 import com.spring.jwt.entity.User;
 import com.spring.jwt.exception.FamilyBackgroundNotFoundException;
@@ -17,6 +19,7 @@ public class FamilyBackgroundServiceImpl implements FamilyBackgroundService{
     private final FamilyBackgroundRepository repository;
     private final UserRepository userRepository;
     private final FamilyBackgroundMapper mapper;
+    private final CompleteProfileRepository completeProfileRepository;
 
     @Override
     public BaseResponseDTO saveFamilyBackground(Integer userId, FamilyBackgroundDTO dto) {
@@ -28,11 +31,11 @@ public class FamilyBackgroundServiceImpl implements FamilyBackgroundService{
         entity.setUser(user);
 
         repository.save(entity);
-        
+
         CompleteProfile completeProfile = completeProfileRepository.findByUserId(userId);
         completeProfile.setFamilyBackground(entity);
         completeProfileRepository.save(completeProfile);
-        
+
         BaseResponseDTO response = new BaseResponseDTO();
         response.setCode("201");
         response.setMessage("FamilyBackground saved successfully");
@@ -52,14 +55,8 @@ public class FamilyBackgroundServiceImpl implements FamilyBackgroundService{
         FamilyBackground background = repository.findByUserId(userId)
                 .orElseThrow(() -> new FamilyBackgroundNotFoundException("FamilyBackground not found"));
 
-        if (dto.getFathersName() != null) {
-            background.setFathersName(dto.getFathersName());
-        }
         if (dto.getFatherOccupation() != null) {
             background.setFatherOccupation(dto.getFatherOccupation());
-        }
-        if (dto.getMothersName() != null) {
-            background.setMothersName(dto.getMothersName());
         }
         if (dto.getMotherOccupation() != null) {
             background.setMotherOccupation(dto.getMotherOccupation());

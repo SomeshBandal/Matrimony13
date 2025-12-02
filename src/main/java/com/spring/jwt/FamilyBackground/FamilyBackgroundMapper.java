@@ -27,7 +27,7 @@ public class FamilyBackgroundMapper {
         dto.setMamaPlace(bg.getMamaPlace());
         dto.setRelativeSurnames(bg.getRelativeSurnames());
         dto.setFamilyBackgroundCol(bg.getFamilyBackgroundCol());
-        
+
         return dto;
     }
 
@@ -39,8 +39,8 @@ public class FamilyBackgroundMapper {
         FamilyBackground bg = new FamilyBackground();
 
         bg.setFathersName(dto.getFathersName());
-        bg.setMothersName(dto.getMothersName());
         bg.setFatherOccupation(dto.getFatherOccupation());
+        bg.setMothersName(dto.getMothersName());
         bg.setMotherOccupation(dto.getMotherOccupation());
         bg.setBrother(dto.getBrothers());
         bg.setMarriedBrothers(dto.getMarriedBrothers());
@@ -52,7 +52,7 @@ public class FamilyBackgroundMapper {
         bg.setMamaPlace(dto.getMamaPlace());
         bg.setRelativeSurnames(dto.getRelativeSurnames());
         bg.setFamilyBackgroundCol(dto.getFamilyBackgroundCol());
-        
+
         return bg;
     }
 }
