@@ -28,7 +28,11 @@ public class FamilyBackgroundServiceImpl implements FamilyBackgroundService{
         entity.setUser(user);
 
         repository.save(entity);
-
+        
+        CompleteProfile completeProfile = completeProfileRepository.findByUserId(userId);
+        completeProfile.setFamilyBackground(entity);
+        completeProfileRepository.save(completeProfile);
+        
         BaseResponseDTO response = new BaseResponseDTO();
         response.setCode("201");
         response.setMessage("FamilyBackground saved successfully");
