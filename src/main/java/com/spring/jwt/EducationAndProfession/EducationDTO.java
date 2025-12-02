@@ -1,5 +1,6 @@
 package com.spring.jwt.EducationAndProfession;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
@@ -12,32 +13,24 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class EducationDTO {
 
-    private Integer educationAndProfessionalDetailsId;
-
-    @NotNull(message = "Education field cannot be empty")
-    @Size(max = 45, message = "Education cannot exceed 45 characters")
+    @NotBlank(message = "Education field cannot be empty")
     private String education;
 
-    @NotNull(message = "Degree field cannot be empty")
-    @Size(max = 45, message = "Degree cannot exceed 45 characters")
+    @NotBlank(message = "Degree required")
     private String degree;
 
-    @NotNull(message = "Occupation field cannot be empty")
-    @Size(max = 45, message = "Occupation cannot exceed 45 characters")
+    @NotBlank(message = "Occupation required")
     private String occupation;
 
-    @NotNull(message = "Occupation details cannot be empty")
-    @Size(max = 45, message = "Occupation details cannot exceed 45 characters")
+    @NotBlank(message = "Occupation details required")
     private String occupationDetails;
 
-    @NotNull(message = "Income per year cannot be empty")
+    @NotBlank(message = "Income per year required")
     @Positive(message = "Income per year must be a positive number")
     private Integer incomePerYear;
 
-    @Size(max = 45, message = "CompleteProfile cannot exceed 45 characters")
     private String status;
 
-    @Size(max = 45, message = "Additional details cannot exceed 45 characters")
     private String educationAndProfessionalDetailsCol;
 
     private Integer userId;
