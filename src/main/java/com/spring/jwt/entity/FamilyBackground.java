@@ -32,16 +32,16 @@ public class FamilyBackground {
     private String motherOccupation;
 
     @Column(length = 45)
-    private String brother;
+    private Integer brother;
 
     @Column(length = 45)
-    private String marriedBrothers;
+    private Integer marriedBrothers;
 
     @Column(length = 45)
-    private String sisters;
+    private Integer sisters;
 
     @Column(length = 45)
-    private String marriedSisters;
+    private Integer marriedSisters;
 
     @Column(length = 45)
     private Boolean interCasteInFamily;
