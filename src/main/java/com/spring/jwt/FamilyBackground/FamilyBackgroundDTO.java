@@ -24,16 +24,16 @@ public class FamilyBackgroundDTO {
     private String motherOccupation;
 
     @NotBlank(message = "brothers field required")
-    private String brothers;
+    private Integer brothers;
 
     @NotBlank(message = "married brothers field required")
-    private String marriedBrothers;
+    private Integer marriedBrothers;
 
     @NotBlank(message = "sisters field required")
-    private String sisters;
+    private Integer sisters;
 
     @NotBlank(message = "married sisters field required")
-    private String marriedSisters;
+    private Integer marriedSisters;
 
     @NotNull(message = "inter caste in family field required")
     private Boolean interCasteInFamily;
