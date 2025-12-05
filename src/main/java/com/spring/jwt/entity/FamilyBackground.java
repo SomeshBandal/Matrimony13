@@ -23,10 +23,10 @@ public class FamilyBackground {
     private String fathersName;
 
     @Column(length = 45)
-    private String mothersName;
+    private String fatherOccupation;
 
     @Column(length = 45)
-    private String fatherOccupation;
+    private String mothersName;
 
     @Column(length = 45)
     private String motherOccupation;
